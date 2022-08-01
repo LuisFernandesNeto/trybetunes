@@ -2,8 +2,10 @@ import React from 'react';
 
 class Login extends React.Component {
   render() {
-    return {
-
-    };
+    return (
+      <div data-testid="page-login" />
+    );
   }
 }
+
+export default Login;
