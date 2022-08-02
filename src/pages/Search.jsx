@@ -1,5 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
+import searchAlbumsAPI from '../services/searchAlbumsAPI';
+import Loading from './Loading';
 
 const MIN_LENGTH = 2;
 
@@ -7,6 +10,9 @@ class Search extends React.Component {
   state = {
     disabled: true,
     name: '',
+    albums: [],
+    loading: false,
+    artist: '',
   }
 
   isButtonDisabled = () => {
@@ -21,10 +27,34 @@ class Search extends React.Component {
     }, this.isButtonDisabled);
   }
 
+  buttonClick = async () => {
+    const { name } = this.state;
+    this.setState({ artist: name,
+      loading: true,
+      albums: await searchAlbumsAPI(name) }, () => {
+      this.setState({ name: '', loading: false });
+    });
+  }
+
   render() {
-    const { name, disabled } = this.state;
+    const { name, disabled, albums, loading, artist } = this.state;
+
+    let condition = '';
+    if (albums.length > 0) {
+      condition = (
+        <p>
+          {`Resultado de álbuns de: ${artist}`}
+        </p>);
+    } else if (albums.length === 0) {
+      condition = (
+        <p>
+          Nenhum álbum foi encontrado
+        </p>);
+    }
+
     return (
       <div data-testid="page-search">
+        <Header />
         <form action="">
           <input
             name="name"
@@ -37,13 +67,24 @@ class Search extends React.Component {
             type="button"
             data-testid="search-artist-button"
             disabled={ disabled }
+            onClick={ this.buttonClick }
           >
             Pesquisar
 
           </button>
         </form>
-        <Header />
-        <p>Search</p>
+        {loading ? <Loading /> : condition }
+        {albums.map((album) => (
+          <div key={ album.collectionId }>
+            <img src={ album.artworkUrl100 } alt="albumImage" />
+            <p>{album.collectionName}</p>
+            <p>{album.artistName}</p>
+            <Link
+              to={ `/album/${album.collectionId}` }
+              data-testid={ `link-to-album-${album.collectionId}` }
+            />
+          </div>
+        ))}
       </div>
     );
   }
