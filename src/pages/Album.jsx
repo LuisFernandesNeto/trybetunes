@@ -41,7 +41,12 @@ class Album extends React.Component {
         {arr.map((a) => (
           <div key={ a.collectionId }>
             { a.previewUrl
-            && <MusicCard trackName={ a.trackName } previewUrl={ a.previewUrl } />}
+            && <MusicCard
+              trackId={ a.trackId }
+              trackName={ a.trackName }
+              previewUrl={ a.previewUrl }
+              music={ a }
+            />}
           </div>
         ))}
       </div>
