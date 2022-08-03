@@ -76,13 +76,15 @@ class Search extends React.Component {
         {loading ? <Loading /> : condition }
         {albums.map((album) => (
           <div key={ album.collectionId }>
-            <img src={ album.artworkUrl100 } alt="albumImage" />
-            <p>{album.collectionName}</p>
-            <p>{album.artistName}</p>
+
             <Link
               to={ `/album/${album.collectionId}` }
               data-testid={ `link-to-album-${album.collectionId}` }
-            />
+            >
+              <img src={ album.artworkUrl100 } alt="albumImage" />
+              <p>{album.collectionName}</p>
+              <p>{album.artistName}</p>
+            </Link>
           </div>
         ))}
       </div>
